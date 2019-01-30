@@ -2,7 +2,7 @@ package org.vaadin.sbt.tasks
 
 import _root_.java.io.{ FileNotFoundException, IOException }
 
-import org.vaadin.sbt.VaadinPlugin.{ compileVaadinWidgetsets, vaadinOptions, vaadinWidgetsets }
+import org.vaadin.sbt.VaadinPlugin.autoImport.{ compileVaadinWidgetsets, vaadinOptions, vaadinWidgetsets }
 import org.vaadin.sbt.util.ForkUtil._
 import org.vaadin.sbt.util.ProjectUtil._
 import sbt.Keys._
@@ -13,18 +13,35 @@ import sbt._
  */
 object CompileWidgetsetsTask {
 
-  val compileWidgetsetsTask: Def.Initialize[Task[Seq[File]]] = (
-    classDirectory in Compile, dependencyClasspath in Compile,
-    resourceDirectories in Compile, vaadinWidgetsets in compileVaadinWidgetsets, vaadinOptions in compileVaadinWidgetsets,
-    javaOptions in compileVaadinWidgetsets, target in compileVaadinWidgetsets, thisProject, skip in compileVaadinWidgetsets,
-    state, streams) map widgetsetCompiler
+  val compileWidgetsetsTask: Def.Initialize[Task[Seq[File]]] = Def.task {
+    widgetsetCompiler(
+      (classDirectory in Compile).value,
+      (dependencyClasspath in Compile).value,
+      (resourceDirectories in Compile).value,
+      (vaadinWidgetsets in compileVaadinWidgetsets).value,
+      (vaadinOptions in compileVaadinWidgetsets).value,
+      (javaOptions in compileVaadinWidgetsets).value,
+      (target in compileVaadinWidgetsets).value,
+      thisProject.value,
+      (skip in compileVaadinWidgetsets).value,
+      state.value,
+      streams.value)
+  }
 
-  val compileWidgetsetsInResourceGeneratorsTask: Def.Initialize[Task[Seq[File]]] = (
-    classDirectory in Compile, dependencyClasspath in Compile,
-    resourceDirectories in Compile, vaadinWidgetsets in compileVaadinWidgetsets, vaadinOptions in compileVaadinWidgetsets,
-    javaOptions in compileVaadinWidgetsets, target in compileVaadinWidgetsets, thisProject,
-    skip in compileVaadinWidgetsets in resourceGenerators,
-    state, streams) map widgetsetCompiler
+  val compileWidgetsetsInResourceGeneratorsTask: Def.Initialize[Task[Seq[File]]] = Def.task {
+    widgetsetCompiler(
+      (classDirectory in Compile).value,
+      (dependencyClasspath in Compile).value,
+      (resourceDirectories in Compile).value,
+      (vaadinWidgetsets in compileVaadinWidgetsets).value,
+      (vaadinOptions in compileVaadinWidgetsets).value,
+      (javaOptions in compileVaadinWidgetsets).value,
+      (target in compileVaadinWidgetsets).value,
+      thisProject.value,
+      (skip in compileVaadinWidgetsets in resourceGenerators).value,
+      state.value,
+      streams.value)
+  }
 
   private def addIfNotInArgs(args: Seq[String], param: String, value: String) =
     if (!args.contains(param)) Seq(param, value) else Nil

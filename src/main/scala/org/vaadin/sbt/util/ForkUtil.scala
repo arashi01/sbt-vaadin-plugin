@@ -12,7 +12,7 @@ private[sbt] object ForkUtil {
     log.debug("runJVMOptions for fork: " + runJVMOptions)
     log.debug("arguments for fork: " + arguments)
 
-    Fork.java(ForkOptions(runJVMOptions = runJVMOptions), arguments)
+    Fork.java(ForkOptions().withRunJVMOptions(runJVMOptions.toVector), arguments)
   }
 
   def forkWidgetsetCmd(

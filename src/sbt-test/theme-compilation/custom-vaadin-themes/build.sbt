@@ -5,6 +5,6 @@ libraryDependencies ++= Seq(
   "com.vaadin" % "vaadin-sass-compiler" % "0.9.7" % "provided"
 )
 
-vaadinSettings
+enablePlugins(VaadinPlugin)
 
-vaadinThemesDir <<= sourceDirectory(sd => Seq(sd / "main" / "custom-dir"))
+vaadinThemesDir := Seq(sourceDirectory.value / "main" / "custom-dir")

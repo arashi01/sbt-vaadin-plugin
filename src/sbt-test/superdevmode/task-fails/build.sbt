@@ -1,4 +1,8 @@
-vaadinSettings
+enablePlugins(VaadinPlugin)
+
+libraryDependencies ++= Seq(
+  "com.vaadin" % "vaadin-client-compiler" % System.getProperty("vaadin.version") % "provided"
+)
 
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed

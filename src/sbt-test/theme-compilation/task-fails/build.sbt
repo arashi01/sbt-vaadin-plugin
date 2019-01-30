@@ -1,4 +1,4 @@
-vaadinSettings
+enablePlugins(VaadinPlugin)
 
 InputKey[Unit]("contains") := {
   val args = Def.spaceDelimited().parsed

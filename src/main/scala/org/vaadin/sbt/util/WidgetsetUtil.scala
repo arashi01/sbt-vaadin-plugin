@@ -19,7 +19,7 @@ private[sbt] object WidgetsetUtil {
 
   def findWidgetsets(folders: Seq[File]): Seq[String] = {
     val foundModuleFiles = (folders ** ("*" + ModulePrefix)).get
-    val relativePathsMap = foundModuleFiles x relativeTo(folders)
+    val relativePathsMap = foundModuleFiles pair relativeTo(folders)
     relativePathsMap map { _._2.replace(File.separator, ".").dropRight(ModulePrefix length) }
   }
 

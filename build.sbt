@@ -6,22 +6,16 @@ version := "1.3-SNAPSHOT"
 
 organization := "org.vaadin.sbt"
 
-sbtPlugin := true
+enablePlugins(SbtPlugin)
 
-sbtVersion in Global := "0.13.9"
-
-scalaVersion in Global := "2.10.6"
-
-scalariformSettings
+enablePlugins(SbtScalariform)
 
 // sbt -Dsbt-vaadin-plugin.repository.path=../henrikerola.github.io/repository/releases publish
 publishTo := Some(Resolver.file("GitHub", file(Option(System.getProperty("sbt-vaadin-plugin.repository.path")).getOrElse("../henrikerola.github.io/repository/snapshots"))))
 
-vaadinSettings
+//enablePlugins(VaadinPlugin)  //TODO re-enable when there is a published sbt 1.2.x compatible version available
 
-packageOptions in (Compile, packageBin) <+= org.vaadin.sbt.tasks.AddOnJarManifestTask.addOnJarManifestTask
-
-ScriptedPlugin.scriptedSettings
+//packageOptions in (Compile, packageBin) <+= org.vaadin.sbt.tasks.AddOnJarManifestTask.addOnJarManifestTask
 
 scriptedBufferLog := false
 

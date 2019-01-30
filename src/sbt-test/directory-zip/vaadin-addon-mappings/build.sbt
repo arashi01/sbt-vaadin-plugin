@@ -1,13 +1,15 @@
-vaadinAddOnSettings
+enablePlugins(VaadinAddonPlugin)
 
-vaadinAddonMappings in packageVaadinDirectoryZip <<= (packageBin in Compile) map {
-  (bin) => Seq((bin, "foobar.jar"), (bin, "mydir/2.jar"))
+vaadinAddonMappings in packageVaadinDirectoryZip := {
+    val bin = (packageBin in Compile).value
+
+    Seq((bin, "foobar.jar"), (bin, "mydir/2.jar"))
 }
 
 val checkZip = taskKey[Unit]("checkZip")
 
 checkZip := {
-  val zip = new java.util.jar.JarFile((target / "foobar.zip").value)
+  val zip = new java.util.jar.JarFile(target.value / "foobar.zip")
   val attributes = zip.getManifest.getMainAttributes
   def checkAttribute(name: String, value: String): Unit = {
     if (attributes.getValue(name) != value) sys.error(s"Wrong value for '${name}'")

@@ -4,30 +4,34 @@ import sbt._
 import sbt.Keys._
 import org.vaadin.sbt.util.ForkUtil._
 import org.vaadin.sbt.util.ProjectUtil._
-import org.vaadin.sbt.VaadinPlugin.{ vaadinOptions, vaadinSuperDevMode, vaadinWidgetsets }
+import org.vaadin.sbt.VaadinPlugin.autoImport.{ vaadinOptions, vaadinSuperDevMode, vaadinWidgetsets }
 
 /**
  * @author Henri Kerola / Vaadin
  */
 object SuperDevModeTask {
 
-  val superDevModeTask: Def.Initialize[Task[Unit]] = (classDirectory in Compile, dependencyClasspath in Compile,
-    unmanagedSourceDirectories in Compile, resourceDirectories in Compile, vaadinWidgetsets in vaadinSuperDevMode,
-    vaadinOptions in vaadinSuperDevMode, javaOptions in vaadinSuperDevMode, target, state, streams) map {
-      (classDir, fullCp, sources, resources, widgetsets, args, jvmArgs, target, state, s) =>
+  val superDevModeTask: Def.Initialize[Task[Unit]] = Def.task {
+    val classDir = (classDirectory in Compile).value
+    val fullCp = (dependencyClasspath in Compile).value
+    val resources = (resourceDirectories in Compile).value
+    val widgetsets = (vaadinWidgetsets in vaadinSuperDevMode).value
+    val args = (vaadinOptions in vaadinSuperDevMode).value
+    val jvmArgs = (javaOptions in vaadinSuperDevMode).value
+    val state = Keys.state.value
 
-        implicit val log = s.log
+    implicit val log = state.log
 
-        val result = forkWidgetsetCmd(
-          jvmArgs,
-          getClassPath(state, Seq(classDir) ++ fullCp.files),
-          "com.google.gwt.dev.codeserver.CodeServer",
-          args,
-          widgetsets,
-          resources)
+    val result = forkWidgetsetCmd(
+      jvmArgs,
+      getClassPath(state, Seq(classDir) ++ fullCp.files),
+      "com.google.gwt.dev.codeserver.CodeServer",
+      args,
+      widgetsets,
+      resources)
 
-        for (error <- result.left) {
-          sys.error(error)
-        }
+    for (error <- result.left) {
+      sys.error(error)
     }
+  }
 }
